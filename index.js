@@ -24,7 +24,7 @@ async function run(){
         console.log('connection established to db');
         const database = client.db("online-food");
         const foodsCollection = database.collection("foods");
-        const orderCollection = database.collection("orders");
+        const ordersCollection = database.collection("orders");
 
         // get data from db
         app.get('/foods', async(req,res) => {
@@ -42,6 +42,15 @@ async function run(){
             const query = {_id: ObjectId(id)};
             const orders = await foodsCollection.findOne(query);
             res.json(orders);
+        })
+
+        //  add Food API
+
+        app.post('/foods', async(req,res) => {
+            const addFood = req.body;
+            const results = await foodsCollection.insertOne(addFood );
+            console.log(results);
+            res.json(results);
         })
 
 
