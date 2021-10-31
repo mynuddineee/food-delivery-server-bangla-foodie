@@ -1,5 +1,6 @@
 const express = require('express');
 const { MongoClient } = require('mongodb');
+const ObjectId = require('mongodb').ObjectId;
 const cors = require('cors');
 require('dotenv').config();
 const app = express();
@@ -23,6 +24,7 @@ async function run(){
         console.log('connection established to db');
         const database = client.db("online-food");
         const foodsCollection = database.collection("foods");
+        const orderCollection = database.collection("orders");
 
         // get data from db
         app.get('/foods', async(req,res) => {
@@ -32,6 +34,24 @@ async function run(){
             res.send(foods);
         })
 
+        // get single item from database
+
+        app.get('/foods/:id', async(req,res) => {
+
+            const id = req.params.id;
+            const query = {_id: ObjectId(id)};
+            const orders = await foodsCollection.findOne(query);
+            res.json(orders);
+        })
+
+
+        //  add orders API
+
+        app.post('/orders', async(req,res) => {
+            const order = req.body;
+            const result = await ordersCollection.insertOne(order);
+            res.json(result);
+        })
     }
 
     finally{
