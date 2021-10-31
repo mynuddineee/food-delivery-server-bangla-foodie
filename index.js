@@ -61,6 +61,15 @@ async function run(){
             const result = await ordersCollection.insertOne(order);
             res.json(result);
         })
+
+        // Delete order API
+
+        app.delete('/foods/:id', async(req,res) => {
+            const id = req.params.id;
+            const query = {_id:ObjectId(id)};
+            const results = await foodsCollection.deleteOne(query);
+            res.json(results);
+        })
     }
 
     finally{
