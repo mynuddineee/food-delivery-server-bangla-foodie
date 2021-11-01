@@ -21,7 +21,7 @@ async function run(){
     try{
 
         await client.connect();
-        console.log('connection established to db');
+        console.log('connection established to on-line food');
         const database = client.db("online-food");
         const foodsCollection = database.collection("foods");
         const ordersCollection = database.collection("orders");
@@ -62,12 +62,31 @@ async function run(){
             res.json(result);
         })
 
-        // Delete order API
+        // get orders API
+
+        app.get('/orders', async(req,res) => {
+            //const order = req.body;
+            const result = await ordersCollection.find({}).toArray();
+            console.log(result);
+            res.send(result);
+        })
+
+
+        // Delete foods API
 
         app.delete('/foods/:id', async(req,res) => {
             const id = req.params.id;
             const query = {_id:ObjectId(id)};
             const results = await foodsCollection.deleteOne(query);
+            res.json(results);
+        })
+
+        // delete orders API
+
+        app.delete('/orders/:id', async(req,res) => {
+            const id = req.params.id;
+            const query = {_id:ObjectId(id)};
+            const results = await ordersCollection.deleteOne(query);
             res.json(results);
         })
     }
@@ -81,7 +100,7 @@ run().catch(console.dir);
 
 app.get('/', (req, res) => {
 
-    res.send('connection with server')
+    res.send('connection with database')
 })
 
 app.listen(port, () =>{
